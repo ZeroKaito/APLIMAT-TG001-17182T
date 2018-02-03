@@ -1,4 +1,5 @@
-﻿using SharpGL;
+﻿using aplimat_labs.Utilities;
+using SharpGL;
 using SharpGL.SceneGraph.Primitives;
 using System;
 using System.Collections.Generic;
@@ -22,10 +23,13 @@ namespace aplimat_labs
     /// </summary>
     public partial class MainWindow : Window
     {
+        Random r = new Random();
         public MainWindow()
         {
             InitializeComponent();
         }
+
+        private List<CubeMesh> myCubes = new List<CubeMesh>();
 
         private void OpenGLControl_OpenGLDraw(object sender, SharpGL.SceneGraph.OpenGLEventArgs args)
         {
@@ -36,15 +40,17 @@ namespace aplimat_labs
 
             // Move Left And Into The Screen
             gl.LoadIdentity();
-            gl.Translate(0.0f, 0.0f, -6.0f);
+            gl.Translate(0.0f, 0.0f, -100.0f);
 
+            CubeMesh myCube = new CubeMesh();
+            myCube.Position = new Vector3(Gaussian.Generate(0, 15), r.Next(-20, 20) , 0);
+            myCubes.Add(myCube);
 
-            gl.Rotate(rotation, 0.0f, 1.0f, 0.0f);
+            foreach (var cube in myCubes)
+            {
+                cube.Draw(gl);
+            }
 
-            Teapot tp = new Teapot();
-            tp.Draw(gl, 14, 1, OpenGL.GL_FILL);
-
-            rotation += 3.0f;
         }
 
         float rotation = 0;
@@ -69,8 +75,8 @@ namespace aplimat_labs
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_AMBIENT, light0ambient);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_DIFFUSE, light0diffuse);
             gl.Light(OpenGL.GL_LIGHT0, OpenGL.GL_SPECULAR, light0specular);
-            gl.Enable(OpenGL.GL_LIGHTING);
-            gl.Enable(OpenGL.GL_LIGHT0);
+            gl.Disable(OpenGL.GL_LIGHTING);
+            gl.Disable(OpenGL.GL_LIGHT0);
 
             gl.ShadeModel(OpenGL.GL_SMOOTH);
         }
